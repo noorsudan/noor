@@ -470,7 +470,8 @@ function buildBranchGrid() {
 
 /* Splash transition */
 window.addEventListener('load', () => {
-  initStore();
+  // ضمان تجاوز شاشة البداية حتى عند تأخر Sanity أو تعذر الاتصال
+  initStore().catch(() => { loadFallbackData(); buildBranchGrid(); });
   setTimeout(() => {
     const splash = document.getElementById('splashScreen');
     splash.classList.add('gone');
