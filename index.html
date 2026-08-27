@@ -226,7 +226,7 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
       <i class="fas fa-times"></i></button>
 
     <div class="modal-thumb h-44 md:h-52 flex items-center justify-center rounded-t-3xl">
-      <i id="modalIcon" class="fas fa-shirt"></i>
+      <i id="modalIcon" class="fas fa-shirt"></i><img id="modalImage" alt="" class="absolute inset-0 w-full h-full object-cover hidden">
     </div>
 
     <div class="p-6 space-y-6">
@@ -380,6 +380,7 @@ async function initStore() {
 
       const rawProducts = await client.fetch(`*[_type == "product" && available == true] {
         _id, name, price, category, icon,
+        "imageUrl": image.asset->url,
         "branchName": branch->name
       }`);
 
@@ -392,7 +393,8 @@ async function initStore() {
             name: p.name,
             price: p.price,
             category: p.category,
-            icon: p.icon || 'fa-shirt'
+            icon: p.icon || 'fa-shirt',
+            imageUrl: p.imageUrl || ''
           });
         }
       });
@@ -551,7 +553,7 @@ function renderProducts() {
   grid.innerHTML = items.map(p => `
     <div class="product-card rounded-2xl cursor-pointer" onclick="openModal(${p.id})">
       <div class="thumb h-32 md:h-40 flex items-center justify-center">
-        <i class="fas ${p.icon}"></i>
+        ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.name}" loading="lazy" class="absolute inset-0 w-full h-full object-cover" onerror="this.remove()">` : `<i class="fas ${p.icon}"></i>`}
         <span class="absolute top-2.5 right-2.5 z-[3] px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-black/45 border border-gold-400/30 text-gold-200">${catLabel(p.category)}</span>
       </div>
       <div class="p-3.5">
@@ -567,6 +569,9 @@ function openModal(id) {
   const p = (productsData[selectedBranch] || []).find(x => x.id === id); if (!p) return;
   currentProduct = p;
   document.getElementById('modalIcon').className = 'fas ' + p.icon;
+  const modalImage = document.getElementById('modalImage');
+  modalImage.src = p.imageUrl || ''; modalImage.alt = p.name;
+  modalImage.classList.toggle('hidden', !p.imageUrl);
   document.getElementById('modalCat').textContent = catLabel(p.category);
   document.getElementById('modalProductName').textContent = p.name;
   document.getElementById('modalProductPrice').textContent = money(p.price);
