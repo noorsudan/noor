@@ -123,6 +123,9 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
 .branch-reveal{opacity:0;transform:translateY(24px) scale(.95)}
 .branch-reveal.show{opacity:1;transform:none;transition:opacity .45s ease,transform .45s ease}
 .deliv-chip{background:rgba(240,196,69,.12);border:1px solid rgba(240,196,69,.3)}
+
+.dash-card{background:rgba(255,255,255,.045);border:1px solid rgba(240,196,69,.18);border-radius:20px;padding:20px;box-shadow:0 12px 35px rgba(0,0,0,.2)}
+.dash-card h2{font-size:1.05rem;font-weight:800}.dash-card>span{display:block;color:rgba(253,246,216,.55);font-size:.82rem}.dash-card>b{display:block;font-size:1.7rem;color:#f0c445;margin-top:8px}.dash-card>i{color:rgba(240,196,69,.35);float:left;margin-top:-28px;font-size:1.5rem}
 </style>
 </head>
 
@@ -164,7 +167,32 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
       <p class="text-gold-100/45">حدد أقرب فرع إليك لبدء التسوق</p>
     </div>
     <div id="branchGrid" class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-5"></div>
-    <div class="mt-10 text-gold-100/25 text-sm">© 2025 متجر نور للملابس — جميع الحقوق محفوظة</div>
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-3"><button onclick="showDashboard()" class="px-4 py-2 rounded-xl border border-gold-400/25 text-gold-100/60 text-sm hover:bg-gold-400/10 transition"><i class="fas fa-chart-line ml-2 text-gold-400"></i>لوحة التحكم</button><span class="text-gold-100/25 text-sm">© 2025 متجر نور للملابس — جميع الحقوق محفوظة</span></div>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboardPage" class="page page-hidden min-h-screen px-4 md:px-8 py-8" style="visibility:hidden">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+      <div><p class="text-gold-400 text-sm font-bold">لوحة الإدارة</p><h1 class="text-3xl md:text-4xl font-black">نظرة عامة على المتجر</h1></div>
+      <button onclick="goToBranchPage()" class="px-4 py-2 rounded-xl border border-gold-400/25 text-sm"><i class="fas fa-store ml-2"></i>عرض المتجر</button>
+    </div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="dash-card"><span>الفروع</span><b id="statBranches">0</b><i class="fas fa-location-dot"></i></div>
+      <div class="dash-card"><span>المنتجات</span><b id="statProducts">0</b><i class="fas fa-boxes-stacked"></i></div>
+      <div class="dash-card"><span>قيمة السلة الحالية</span><b id="statCart">0 ج.س</b><i class="fas fa-chart-line"></i></div>
+      <div class="dash-card"><span>حالة الربط</span><b id="statConnection">محلي</b><i class="fas fa-cloud"></i></div>
+    </div>
+    <div class="grid lg:grid-cols-[1fr_1.5fr] gap-5">
+      <section class="dash-card"><div class="flex justify-between items-center mb-4"><h2>إضافة منتج</h2><i class="fas fa-plus text-gold-400"></i></div>
+        <input id="adminName" class="form-input w-full rounded-xl p-3 mb-2" placeholder="اسم المنتج">
+        <div class="grid grid-cols-2 gap-2"><input id="adminPrice" type="number" class="form-input rounded-xl p-3" placeholder="السعر"><select id="adminCat" class="form-input rounded-xl p-3"><option value="men">رجالي</option><option value="women">نسائي</option><option value="kids">أطفال</option><option value="accessories">إكسسوارات</option></select></div>
+        <button onclick="adminAddProduct()" class="gold-btn w-full rounded-xl p-3 mt-3 font-bold">حفظ في هذا المتصفح</button>
+        <p class="text-xs text-gold-100/40 mt-3">تعديلات لوحة الإدارة المحلية تحفظ في LocalStorage. مصدر البيانات الأساسي يبقى Sanity عند تفعيل الربط.</p>
+      </section>
+      <section class="dash-card"><div class="flex justify-between items-center mb-4"><h2>منتجات الفرع الحالي</h2><select id="adminBranch" onchange="renderDashboard()" class="form-input rounded-lg px-2 py-1 text-sm"></select></div><div id="adminProducts" class="space-y-2 max-h-80 overflow-auto"></div></section>
+    </div>
   </div>
 </div>
 
@@ -486,6 +514,7 @@ function selectBranch(b) {
 
 function goToBranchPage() {
   closeCart(); document.getElementById('fabCart').style.display = 'none';
+  document.getElementById('dashboardPage').classList.replace('page-visible', 'page-hidden');
   document.getElementById('productsPage').classList.replace('page-visible', 'page-hidden');
   setTimeout(() => {
     document.getElementById('branchPage').classList.replace('page-hidden', 'page-visible');
@@ -662,6 +691,30 @@ function checkout() {
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(m)}`, '_blank');
   showToast('جاري تحويلك إلى الواتساب...', 'success');
 }
+
+function dashboardData(){
+  const saved=JSON.parse(localStorage.getItem('noorStoreData')||'null');
+  if(saved){branches=saved.branches;productsData=saved.productsData;}
+}
+function saveDashboardData(){localStorage.setItem('noorStoreData',JSON.stringify({branches,productsData}));}
+function renderDashboard(){
+  dashboardData(); const sel=document.getElementById('adminBranch'); if(!sel)return;
+  sel.innerHTML=branches.map(b=>`<option value="${b.name}">${b.name}</option>`).join('');
+  if(selectedBranch)sel.value=selectedBranch; else selectedBranch=sel.value;
+  const list=productsData[sel.value]||[]; document.getElementById('statBranches').textContent=branches.length;
+  document.getElementById('statProducts').textContent=Object.values(productsData).reduce((n,a)=>n+a.length,0);
+  document.getElementById('statCart').textContent=money(totals().grand);
+  document.getElementById('statConnection').textContent=client?'Sanity':'محلي';
+  document.getElementById('adminProducts').innerHTML=list.map((p,i)=>`<div class="flex items-center justify-between gap-2 bg-white/5 rounded-xl p-3"><span class="truncate">${p.name}</span><span class="text-gold-400 text-sm">${money(p.price)}</span><button onclick="adminRemoveProduct(${i})" class="text-red-400 px-2" title="حذف"><i class="fas fa-trash"></i></button></div>`).join('')||'<p class="text-gold-100/40 text-sm">لا توجد منتجات</p>';
+}
+function adminAddProduct(){
+ const name=document.getElementById('adminName').value.trim(),price=Number(document.getElementById('adminPrice').value),cat=document.getElementById('adminCat').value,branch=document.getElementById('adminBranch').value;
+ if(!name||!price||!branch)return showToast('أدخل اسم المنتج والسعر والفرع','error');
+ productsData[branch].push({id:Date.now(),name,price,category:cat,icon:'fa-shirt'}); saveDashboardData(); document.getElementById('adminName').value='';document.getElementById('adminPrice').value='';renderDashboard();showToast('تم حفظ المنتج محلياً','success');
+}
+function adminRemoveProduct(i){const b=document.getElementById('adminBranch').value;productsData[b].splice(i,1);saveDashboardData();renderDashboard();}
+function showDashboard(){dashboardData();document.getElementById('branchPage').classList.replace('page-visible','page-hidden');document.getElementById('productsPage').classList.replace('page-visible','page-hidden');const d=document.getElementById('dashboardPage');d.style.visibility='visible';d.classList.replace('page-hidden','page-visible');renderDashboard();}
+if(location.hash==='#dashboard') window.addEventListener('load',()=>setTimeout(showDashboard,3300));
 
 function showToast(msg, type = 'info') {
   const ic = { success: 'fas fa-check-circle text-emerald-400', error: 'fas fa-exclamation-circle text-red-400', info: 'fas fa-info-circle text-gold-400' };
