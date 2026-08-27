@@ -1,0 +1,2 @@
+import {defineType,defineField} from 'sanity'
+export default defineType({name:'branch',title:'الفروع',type:'document',fields:[defineField({name:'name',title:'اسم الفرع',type:'string',validation:r=>r.required()}),defineField({name:'description',title:'الوصف',type:'string'}),defineField({name:'icon',title:'أيقونة Font Awesome',type:'string',initialValue:'fa-store'}),defineField({name:'deliveryFee',title:'رسوم التوصيل',type:'number',initialValue:0}),defineField({name:'active',title:'الفرع متاح',type:'boolean',initialValue:true})]})
