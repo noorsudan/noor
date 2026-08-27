@@ -32,7 +32,7 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
   opacity:.5;animation:softGlow 26s ease-in-out infinite;will-change:opacity}
 @keyframes softGlow{0%,100%{opacity:.35}50%{opacity:.75}}
 
-#splashScreen{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;
+#splashScreen{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
   background:radial-gradient(circle at 50% 50%,#1a1206,#0d0a04);transition:opacity .8s ease,visibility .8s ease}
 #splashScreen.gone{opacity:0;visibility:hidden;pointer-events:none}
 .splash-crown{font-size:3.5rem;opacity:0;transform:scale(.3) rotate(-30deg);
@@ -150,7 +150,7 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
 <div id="toastContainer" class="fixed top-24 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-2 items-center pointer-events-none"></div>
 
 <!-- Branch Page -->
-<div id="branchPage" class="page page-hidden min-h-screen flex items-center justify-center px-4 py-10" style="visibility:hidden">
+<div id="branchPage" class="page page-visible min-h-screen flex items-center justify-center px-4 py-10" style="visibility:visible">
   <div class="max-w-4xl w-full text-center">
     <div class="mb-10">
       <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-gold-300 via-gold-400 to-gold-700 mb-5 shadow-2xl shadow-gold-600/30">
