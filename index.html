@@ -332,13 +332,23 @@ const SANITY_PROJECT_ID = '75hfac4o';
 const SANITY_DATASET = 'production';
 
 let client = null;
-if (window.sanityClient && SANITY_PROJECT_ID !== 'YOUR_SANITY_PROJECT_ID') {
-  client = window.sanityClient({
-    projectId: SANITY_PROJECT_ID,
-    dataset: SANITY_DATASET,
-    apiVersion: '2024-01-01',
-    useCdn: true
-  });
+if (SANITY_PROJECT_ID !== 'YOUR_SANITY_PROJECT_ID') {
+  if (window.sanityClient) {
+    client = window.sanityClient({
+      projectId: SANITY_PROJECT_ID,
+      dataset: SANITY_DATASET,
+      apiVersion: '2024-01-01',
+      useCdn: true
+    });
+  } else {
+    // احتياطي مباشر إذا لم يتم تحميل مكتبة Sanity من CDN
+    client = { fetch: async query => {
+      const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v2024-01-01/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`Sanity HTTP ${response.status}`);
+      return (await response.json()).result;
+    }};
+  }
 }
 
 let WHATSAPP_NUMBER = '249123456789';
