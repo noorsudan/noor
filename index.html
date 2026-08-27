@@ -559,7 +559,9 @@ function renderProducts() {
 function openModal(id) {
   const p = (productsData[selectedBranch] || []).find(x => x.id === id); if (!p) return;
   currentProduct = p;
-  document.getElementById('modalIcon').className = 'fas ' + p.icon;
+  const modalIcon = document.getElementById('modalIcon');
+  modalIcon.className = 'fas ' + p.icon;
+  modalIcon.classList.toggle('hidden', !!p.imageUrl);
   const modalImage = document.getElementById('modalImage');
   modalImage.src = p.imageUrl || ''; modalImage.alt = p.name;
   modalImage.classList.toggle('hidden', !p.imageUrl);
