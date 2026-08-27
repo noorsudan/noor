@@ -208,10 +208,11 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
 
       <div class="flex flex-wrap justify-center gap-2.5 mb-9">
         <button onclick="filterCategory('all')" data-category="all" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">الكل</button>
-        <button onclick="filterCategory('men')" data-category="men" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">رجالي</button>
-        <button onclick="filterCategory('women')" data-category="women" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">نسائي</button>
-        <button onclick="filterCategory('kids')" data-category="kids" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">أطفال</button>
-        <button onclick="filterCategory('accessories')" data-category="accessories" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">إكسسوارات</button>
+        <button onclick="filterCategory('pajamas')" data-category="men" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">رجالي</button>
+        <button onclick="filterCategory('pants')" data-category="women" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">نسائي</button>
+        <button onclick="filterCategory('shirts')" data-category="kids" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">أطفال</button>
+        <button onclick="filterCategory('shoes')" data-category="accessories" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">إكسسوارات</button>
+        <button onclick="filterCategory('plus')" data-category="plus" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">مقاسات كبيرة</button>
       </div>
 
       <div id="productsGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5"></div>
@@ -244,20 +245,7 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
           <button onclick="selSize(this,'L')" class="size-btn w-12 h-12 rounded-xl font-bold text-sm">L</button>
           <button onclick="selSize(this,'XL')" class="size-btn w-12 h-12 rounded-xl font-bold text-sm">XL</button>
           <button onclick="selSize(this,'XXL')" class="size-btn w-12 h-12 rounded-xl font-bold text-sm">XXL</button>
-        </div>
-      </div>
-
-      <div>
-        <label class="font-bold text-sm mb-3 block"><i class="fas fa-palette text-gold-400 ml-2"></i>اختر اللون</label>
-        <div class="flex flex-wrap gap-3">
-          <button onclick="selColor(this,'ذهبي')" class="color-option w-10 h-10 rounded-full" style="background:linear-gradient(135deg,#f7dc74,#c4881c)" title="ذهبي"></button>
-          <button onclick="selColor(this,'أسود')" class="color-option w-10 h-10 rounded-full bg-gray-900" title="أسود"></button>
-          <button onclick="selColor(this,'أبيض')" class="color-option w-10 h-10 rounded-full bg-white" title="أبيض"></button>
-          <button onclick="selColor(this,'بيج')" class="color-option w-10 h-10 rounded-full bg-amber-200" title="بيج"></button>
-          <button onclick="selColor(this,'بني')" class="color-option w-10 h-10 rounded-full bg-amber-800" title="بني"></button>
-          <button onclick="selColor(this,'أحمر')" class="color-option w-10 h-10 rounded-full bg-red-600" title="أحمر"></button>
-          <button onclick="selColor(this,'أزرق')" class="color-option w-10 h-10 rounded-full bg-blue-600" title="أزرق"></button>
-          <button onclick="selColor(this,'أخضر')" class="color-option w-10 h-10 rounded-full bg-emerald-600" title="أخضر"></button>
+          <button onclick="selSize(this,'XXXL')" class="size-btn w-14 h-12 rounded-xl font-bold text-sm">XXXL</button>
         </div>
       </div>
 
@@ -311,6 +299,8 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
       <input type="text" id="customerName" placeholder="الاسم الكامل" class="form-input w-full px-3 py-2.5 rounded-xl text-sm">
       <input type="tel" id="customerPhone" placeholder="رقم الهاتف" class="form-input w-full px-3 py-2.5 rounded-xl text-sm" dir="ltr" style="text-align:right">
     </div>
+    <input type="text" id="customerAddress" placeholder="العنوان بالتفصيل" class="form-input w-full px-3 py-2.5 rounded-xl text-sm">
+    <input type="tel" id="customerBackupPhone" placeholder="رقم احتياطي (اختياري)" class="form-input w-full px-3 py-2.5 rounded-xl text-sm" dir="ltr" style="text-align:right">
 
     <button onclick="checkout()" class="whatsapp-btn w-full py-3.5 rounded-2xl text-white font-bold flex items-center justify-center gap-2">
       <i class="fab fa-whatsapp text-xl"></i><span>إتمام الطلب عبر الواتساب</span>
@@ -355,11 +345,11 @@ let WHATSAPP_NUMBER = '249123456789';
 let branches = [];
 let productsData = {};
 let selectedBranch='', cart=[], currentProduct=null,
-    selectedSize='', selectedColor='', quantity=1, cartOpen=false, activeCat='all';
+    selectedSize='', quantity=1, cartOpen=false, activeCat='all';
 
 const money = n => (n||0).toLocaleString('en-US') + ' ج.س';
 const deliveryOf = n => (branches.find(b => b.name === n) || { deliveryFee: 0 }).deliveryFee;
-const catLabel = c => ({ men: 'رجالي', women: 'نسائي', kids: 'أطفال', accessories: 'إكسسوارات' }[c] || c);
+const catLabel = c => ({ pajamas: 'بجامات', pants: 'بناطيل', shirts: 'أقمصة', shoes: 'أحذية', plus: 'مقاسات كبيرة' }[c] || c);
 
 /* ==================== جلب البيانات من Sanity ==================== */
 async function initStore() {
@@ -393,6 +383,7 @@ async function initStore() {
             name: p.name,
             price: p.price,
             category: p.category,
+            sizes: p.sizes || [],
             icon: p.icon || 'fa-shirt',
             imageUrl: p.imageUrl || ''
           });
@@ -575,9 +566,9 @@ function openModal(id) {
   document.getElementById('modalCat').textContent = catLabel(p.category);
   document.getElementById('modalProductName').textContent = p.name;
   document.getElementById('modalProductPrice').textContent = money(p.price);
-  selectedSize = ''; selectedColor = ''; quantity = 1;
+  selectedSize = ''; quantity = 1;
   document.getElementById('modalQty').textContent = 1;
-  document.querySelectorAll('.size-btn,.color-option').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('productModal').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
 }
@@ -589,15 +580,13 @@ function closeProductModal() {
 document.getElementById('productModal').addEventListener('click', e => { if (e.target === document.getElementById('productModal')) closeProductModal(); });
 
 function selSize(b, s) { document.querySelectorAll('.size-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); selectedSize = s; }
-function selColor(b, c) { document.querySelectorAll('.color-option').forEach(x => x.classList.remove('active')); b.classList.add('active'); selectedColor = c; }
 function chgQty(d) { quantity = Math.max(1, quantity + d); document.getElementById('modalQty').textContent = quantity; }
 
 function addToCart() {
   if (!selectedSize) return showToast('يرجى اختيار المقاس', 'error');
-  if (!selectedColor) return showToast('يرجى اختيار اللون', 'error');
-  const i = cart.findIndex(x => x.id === currentProduct.id && x.size === selectedSize && x.color === selectedColor);
+  const i = cart.findIndex(x => x.id === currentProduct.id && x.size === selectedSize);
   if (i > -1) cart[i].qty += quantity;
-  else cart.push({ id: currentProduct.id, name: currentProduct.name, price: currentProduct.price, icon: currentProduct.icon, size: selectedSize, color: selectedColor, qty: quantity });
+  else cart.push({ id: currentProduct.id, name: currentProduct.name, price: currentProduct.price, icon: currentProduct.icon, size: selectedSize, qty: quantity });
   const n = currentProduct.name;
   updateCartUI(true); closeProductModal();
   showToast(`تمت إضافة "${n}" إلى السلة`, 'success');
@@ -665,13 +654,16 @@ function closeCart() { cartOpen = false; document.getElementById('cartPanel').cl
 function checkout() {
   const name = document.getElementById('customerName').value.trim();
   const phone = document.getElementById('customerPhone').value.trim();
+  const address = document.getElementById('customerAddress').value.trim();
+  const backupPhone = document.getElementById('customerBackupPhone').value.trim();
   if (!name) { showToast('يرجى إدخال الاسم الكامل', 'error'); document.getElementById('customerName').focus(); return; }
+  if (!address) { showToast('يرجى إدخال العنوان', 'error'); document.getElementById('customerAddress').focus(); return; }
   if (!phone) { showToast('يرجى إدخال رقم الهاتف', 'error'); document.getElementById('customerPhone').focus(); return; }
   if (!cart.length) { showToast('السلة فارغة!', 'error'); return; }
   const t = totals();
 
   let m = `👑 *طلب جديد من متجر نور للملابس*\n━━━━━━━━━━━━━━━━━━\n\n`;
-  m += `📍 *الفرع:* ${selectedBranch}\n👤 *اسم العميل:* ${name}\n📞 *رقم الهاتف:* ${phone}\n\n`;
+  m += `📍 *الفرع:* ${selectedBranch}\n👤 *اسم العميل:* ${name}\n📞 *رقم الهاتف:* ${phone}\n📍 *العنوان:* ${address}\n${backupPhone ? `📞 *رقم احتياطي:* ${backupPhone}\n` : ''}\n`;
   m += `🛒 *تفاصيل الطلب:*\n──────────────\n`;
   cart.forEach((it, i) => {
     m += `\n${i+1}. *${it.name}*\n   📏 المقاس: ${it.size}\n   🎨 اللون: ${it.color}\n   📦 الكمية: ${it.qty}\n   💰 السعر: ${money(it.price * it.qty)}\n`;
