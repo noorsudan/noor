@@ -111,6 +111,7 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
 .mini-thumb i{color:#f0c445;font-size:1.35rem}
 
 .toast{animation:tIn .3s ease,tOut .35s ease 2.5s forwards;background:#241707!important;color:#fff8df!important;border:1px solid rgba(240,196,69,.5);min-width:260px;justify-content:center;box-shadow:0 12px 32px rgba(0,0,0,.7);opacity:1!important}.toast span{color:#fff8df!important;opacity:1!important}.toast i{font-size:1.05rem;flex-shrink:0}
+.image-lightbox{transition:opacity .25s}.image-lightbox.hidden{opacity:0;pointer-events:none}.image-lightbox img{max-height:86vh;max-width:92vw;object-fit:contain}
 @keyframes tIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}
 @keyframes tOut{to{opacity:0;transform:translateY(-14px)}}
 
@@ -263,6 +264,12 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
       </button>
     </div>
   </div>
+</div>
+
+<!-- Full image viewer -->
+<div id="imageLightbox" class="image-lightbox hidden fixed inset-0 z-[120] bg-black/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closeImageLightbox()">
+  <button onclick="closeImageLightbox()" class="absolute top-5 left-5 w-11 h-11 rounded-full bg-black/70 border border-gold-400/40 text-gold-200 text-xl z-10"><i class="fas fa-times"></i></button>
+  <img id="fullProductImage" src="" alt="" class="rounded-2xl shadow-2xl border border-gold-400/30" onclick="event.stopPropagation()">
 </div>
 
 <!-- Cart Panel -->
@@ -581,8 +588,10 @@ function openModal(id) {
 
 function openFullImage(e) {
   e.stopPropagation();
-  if (currentProduct?.imageUrl) window.open(currentProduct.imageUrl, '_blank', 'noopener,noreferrer');
+  if (currentProduct?.imageUrl) { const box=document.getElementById('imageLightbox'); const image=document.getElementById('fullProductImage'); image.src=currentProduct.imageUrl; image.alt=currentProduct.name; box.classList.remove('hidden'); document.body.style.overflow='hidden'; }
 }
+
+function closeImageLightbox() { document.getElementById('imageLightbox').classList.add('hidden'); if (!document.getElementById('productModal').classList.contains('hidden')) document.body.style.overflow='hidden'; else document.body.style.overflow=''; }
 
 function closeProductModal() {
   document.getElementById('productModal').classList.add('hidden');
@@ -695,7 +704,7 @@ function showToast(msg, type = 'info') {
   setTimeout(() => t.remove(), 3100);
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeProductModal(); closeCart(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeImageLightbox(); closeProductModal(); closeCart(); } });
 </script>
 </body>
         </html>
