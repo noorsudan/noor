@@ -110,7 +110,8 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
 .mini-thumb{background:linear-gradient(145deg,rgba(240,196,69,.2),rgba(124,80,27,.12));border:1px solid rgba(240,196,69,.2)}
 .mini-thumb i{color:#f0c445;font-size:1.35rem}
 
-.toast{animation:tIn .3s ease,tOut .35s ease 2.5s forwards}
+.toast{animation:tIn .3s ease,tOut .35s ease 2.5s forwards;background:#241707!important;color:#fff8df!important;border:1px solid rgba(240,196,69,.5);min-width:260px;justify-content:center;box-shadow:0 12px 32px rgba(0,0,0,.7);opacity:1!important}.toast span{color:#fff8df!important;opacity:1!important}.toast i{font-size:1.05rem;flex-shrink:0}
+.image-lightbox{transition:opacity .25s}.image-lightbox.hidden{opacity:0;pointer-events:none}.image-lightbox img{max-height:86vh;max-width:92vw;object-fit:contain}
 @keyframes tIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}
 @keyframes tOut{to{opacity:0;transform:translateY(-14px)}}
 
@@ -123,6 +124,7 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
 .branch-reveal{opacity:0;transform:translateY(24px) scale(.95)}
 .branch-reveal.show{opacity:1;transform:none;transition:opacity .45s ease,transform .45s ease}
 .deliv-chip{background:rgba(240,196,69,.12);border:1px solid rgba(240,196,69,.3)}
+
 </style>
 </head>
 
@@ -207,10 +209,11 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
 
       <div class="flex flex-wrap justify-center gap-2.5 mb-9">
         <button onclick="filterCategory('all')" data-category="all" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">الكل</button>
-        <button onclick="filterCategory('men')" data-category="men" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">رجالي</button>
-        <button onclick="filterCategory('women')" data-category="women" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">نسائي</button>
-        <button onclick="filterCategory('kids')" data-category="kids" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">أطفال</button>
-        <button onclick="filterCategory('accessories')" data-category="accessories" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">إكسسوارات</button>
+        <button onclick="filterCategory('pajamas')" data-category="pajamas" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">بجامات</button>
+        <button onclick="filterCategory('pants')" data-category="pants" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">بناطيل</button>
+        <button onclick="filterCategory('shirts')" data-category="shirts" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">أقمصة</button>
+        <button onclick="filterCategory('shoes')" data-category="shoes" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">أحذية</button>
+        <button onclick="filterCategory('plus')" data-category="plus" class="category-btn px-5 py-2 rounded-full text-sm font-medium transition">مقاسات كبيرة</button>
       </div>
 
       <div id="productsGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5"></div>
@@ -225,7 +228,7 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
       <i class="fas fa-times"></i></button>
 
     <div class="modal-thumb h-44 md:h-52 flex items-center justify-center rounded-t-3xl">
-      <i id="modalIcon" class="fas fa-shirt"></i>
+      <i id="modalIcon" class="fas fa-shirt"></i><img id="modalImage" alt="" class="absolute inset-0 w-full h-full object-cover hidden cursor-zoom-in" onclick="openFullImage(event)">
     </div>
 
     <div class="p-6 space-y-6">
@@ -237,26 +240,13 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
 
       <div>
         <label class="font-bold text-sm mb-3 block"><i class="fas fa-ruler-combined text-gold-400 ml-2"></i>اختر المقاس</label>
-        <div class="flex flex-wrap gap-3">
+        <div id="sizeOptions" class="flex flex-wrap gap-3">
           <button onclick="selSize(this,'S')" class="size-btn w-12 h-12 rounded-xl font-bold text-sm">S</button>
           <button onclick="selSize(this,'M')" class="size-btn w-12 h-12 rounded-xl font-bold text-sm">M</button>
           <button onclick="selSize(this,'L')" class="size-btn w-12 h-12 rounded-xl font-bold text-sm">L</button>
           <button onclick="selSize(this,'XL')" class="size-btn w-12 h-12 rounded-xl font-bold text-sm">XL</button>
           <button onclick="selSize(this,'XXL')" class="size-btn w-12 h-12 rounded-xl font-bold text-sm">XXL</button>
-        </div>
-      </div>
-
-      <div>
-        <label class="font-bold text-sm mb-3 block"><i class="fas fa-palette text-gold-400 ml-2"></i>اختر اللون</label>
-        <div class="flex flex-wrap gap-3">
-          <button onclick="selColor(this,'ذهبي')" class="color-option w-10 h-10 rounded-full" style="background:linear-gradient(135deg,#f7dc74,#c4881c)" title="ذهبي"></button>
-          <button onclick="selColor(this,'أسود')" class="color-option w-10 h-10 rounded-full bg-gray-900" title="أسود"></button>
-          <button onclick="selColor(this,'أبيض')" class="color-option w-10 h-10 rounded-full bg-white" title="أبيض"></button>
-          <button onclick="selColor(this,'بيج')" class="color-option w-10 h-10 rounded-full bg-amber-200" title="بيج"></button>
-          <button onclick="selColor(this,'بني')" class="color-option w-10 h-10 rounded-full bg-amber-800" title="بني"></button>
-          <button onclick="selColor(this,'أحمر')" class="color-option w-10 h-10 rounded-full bg-red-600" title="أحمر"></button>
-          <button onclick="selColor(this,'أزرق')" class="color-option w-10 h-10 rounded-full bg-blue-600" title="أزرق"></button>
-          <button onclick="selColor(this,'أخضر')" class="color-option w-10 h-10 rounded-full bg-emerald-600" title="أخضر"></button>
+          <button onclick="selSize(this,'XXXL')" class="size-btn w-14 h-12 rounded-xl font-bold text-sm">XXXL</button>
         </div>
       </div>
 
@@ -274,6 +264,12 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
       </button>
     </div>
   </div>
+</div>
+
+<!-- Full image viewer -->
+<div id="imageLightbox" class="image-lightbox hidden fixed inset-0 z-[120] bg-black/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closeImageLightbox()">
+  <button onclick="closeImageLightbox()" class="absolute top-5 left-5 w-11 h-11 rounded-full bg-black/70 border border-gold-400/40 text-gold-200 text-xl z-10"><i class="fas fa-times"></i></button>
+  <img id="fullProductImage" src="" alt="" class="rounded-2xl shadow-2xl border border-gold-400/30" onclick="event.stopPropagation()">
 </div>
 
 <!-- Cart Panel -->
@@ -310,6 +306,8 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
       <input type="text" id="customerName" placeholder="الاسم الكامل" class="form-input w-full px-3 py-2.5 rounded-xl text-sm">
       <input type="tel" id="customerPhone" placeholder="رقم الهاتف" class="form-input w-full px-3 py-2.5 rounded-xl text-sm" dir="ltr" style="text-align:right">
     </div>
+    <input type="text" id="customerAddress" placeholder="العنوان بالتفصيل" class="form-input w-full px-3 py-2.5 rounded-xl text-sm">
+    <input type="tel" id="customerBackupPhone" placeholder="رقم احتياطي (اختياري)" class="form-input w-full px-3 py-2.5 rounded-xl text-sm" dir="ltr" style="text-align:right">
 
     <button onclick="checkout()" class="whatsapp-btn w-full py-3.5 rounded-2xl text-white font-bold flex items-center justify-center gap-2">
       <i class="fab fa-whatsapp text-xl"></i><span>إتمام الطلب عبر الواتساب</span>
@@ -331,24 +329,34 @@ const SANITY_PROJECT_ID = '75hfac4o';
 const SANITY_DATASET = 'production';
 
 let client = null;
-if (window.sanityClient && SANITY_PROJECT_ID !== 'YOUR_SANITY_PROJECT_ID') {
-  client = window.sanityClient({
-    projectId: '75hfac4o'
-    dataset: production,
-    apiVersion: '2024-01-01',
-    useCdn: true
-  });
+if (SANITY_PROJECT_ID !== 'YOUR_SANITY_PROJECT_ID') {
+  if (window.sanityClient) {
+    client = window.sanityClient({
+      projectId: SANITY_PROJECT_ID,
+      dataset: SANITY_DATASET,
+      apiVersion: '2024-01-01',
+      useCdn: false
+    });
+  } else {
+    // احتياطي مباشر إذا لم يتم تحميل مكتبة Sanity من CDN
+    client = { fetch: async query => {
+      const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v2024-01-01/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`Sanity HTTP ${response.status}`);
+      return (await response.json()).result;
+    }};
+  }
 }
 
 let WHATSAPP_NUMBER = '249123456789';
 let branches = [];
 let productsData = {};
 let selectedBranch='', cart=[], currentProduct=null,
-    selectedSize='', selectedColor='', quantity=1, cartOpen=false, activeCat='all';
+    selectedSize='', quantity=1, cartOpen=false, activeCat='all';
 
 const money = n => (n||0).toLocaleString('en-US') + ' ج.س';
 const deliveryOf = n => (branches.find(b => b.name === n) || { deliveryFee: 0 }).deliveryFee;
-const catLabel = c => ({ men: 'رجالي', women: 'نسائي', kids: 'أطفال', accessories: 'إكسسوارات' }[c] || c);
+const catLabel = c => ({ pajamas: 'بجامات', pants: 'بناطيل', shirts: 'أقمصة', shoes: 'أحذية', plus: 'مقاسات كبيرة' }[c] || c);
 
 /* ==================== جلب البيانات من Sanity ==================== */
 async function initStore() {
@@ -368,7 +376,8 @@ async function initStore() {
       }));
 
       const rawProducts = await client.fetch(`*[_type == "product" && available == true] {
-        _id, name, price, category, icon,
+        _id, name, price, category, icon, sizes,
+        "imageUrl": image.asset->url,
         "branchName": branch->name
       }`);
 
@@ -381,7 +390,9 @@ async function initStore() {
             name: p.name,
             price: p.price,
             category: p.category,
-            icon: p.icon || 'fa-shirt'
+            sizes: p.sizes || [],
+            icon: p.icon || 'fa-shirt',
+            imageUrl: p.imageUrl || ''
           });
         }
       });
@@ -459,7 +470,10 @@ function buildBranchGrid() {
 
 /* Splash transition */
 window.addEventListener('load', () => {
-  initStore();
+  // اعرض الفروع فورًا من البيانات المحلية، ثم حدّثها من Sanity في الخلفية
+  loadFallbackData();
+  buildBranchGrid();
+  initStore().catch(e => console.error('⚠️ فشل جلب بيانات Sanity:', e));
   setTimeout(() => {
     const splash = document.getElementById('splashScreen');
     splash.classList.add('gone');
@@ -537,7 +551,7 @@ function renderProducts() {
   grid.innerHTML = items.map(p => `
     <div class="product-card rounded-2xl cursor-pointer" onclick="openModal(${p.id})">
       <div class="thumb h-32 md:h-40 flex items-center justify-center">
-        <i class="fas ${p.icon}"></i>
+        ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.name}" loading="lazy" class="absolute inset-0 w-full h-full object-cover" onerror="this.remove()">` : `<i class="fas ${p.icon}"></i>`}
         <span class="absolute top-2.5 right-2.5 z-[3] px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-black/45 border border-gold-400/30 text-gold-200">${catLabel(p.category)}</span>
       </div>
       <div class="p-3.5">
@@ -552,16 +566,32 @@ function renderProducts() {
 function openModal(id) {
   const p = (productsData[selectedBranch] || []).find(x => x.id === id); if (!p) return;
   currentProduct = p;
-  document.getElementById('modalIcon').className = 'fas ' + p.icon;
+  const modalIcon = document.getElementById('modalIcon');
+  modalIcon.className = 'fas ' + p.icon;
+  modalIcon.classList.toggle('hidden', !!p.imageUrl);
+  const modalImage = document.getElementById('modalImage');
+  modalImage.src = p.imageUrl || ''; modalImage.alt = p.name;
+  modalImage.classList.toggle('hidden', !p.imageUrl);
   document.getElementById('modalCat').textContent = catLabel(p.category);
   document.getElementById('modalProductName').textContent = p.name;
   document.getElementById('modalProductPrice').textContent = money(p.price);
-  selectedSize = ''; selectedColor = ''; quantity = 1;
+  selectedSize = ''; quantity = 1;
+  const sizeOptions = document.getElementById('sizeOptions');
+  const configuredSizes = (p.sizes || []).filter(s => s && (s.available !== false)).map(s => typeof s === 'string' ? s : s.label);
+  const visibleSizes = configuredSizes.length ? configuredSizes : ['S','M','L','XL','XXL','XXXL'];
+  sizeOptions.innerHTML = visibleSizes.map(s => `<button onclick="selSize(this,'${s}')" class="size-btn w-auto min-w-[3rem] px-3 h-12 rounded-xl font-bold text-sm">${s}</button>`).join('');
   document.getElementById('modalQty').textContent = 1;
-  document.querySelectorAll('.size-btn,.color-option').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('productModal').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
 }
+
+function openFullImage(e) {
+  e.stopPropagation();
+  if (currentProduct?.imageUrl) { const box=document.getElementById('imageLightbox'); const image=document.getElementById('fullProductImage'); image.src=currentProduct.imageUrl; image.alt=currentProduct.name; box.classList.remove('hidden'); document.body.style.overflow='hidden'; }
+}
+
+function closeImageLightbox() { document.getElementById('imageLightbox').classList.add('hidden'); if (!document.getElementById('productModal').classList.contains('hidden')) document.body.style.overflow='hidden'; else document.body.style.overflow=''; }
 
 function closeProductModal() {
   document.getElementById('productModal').classList.add('hidden');
@@ -570,15 +600,13 @@ function closeProductModal() {
 document.getElementById('productModal').addEventListener('click', e => { if (e.target === document.getElementById('productModal')) closeProductModal(); });
 
 function selSize(b, s) { document.querySelectorAll('.size-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); selectedSize = s; }
-function selColor(b, c) { document.querySelectorAll('.color-option').forEach(x => x.classList.remove('active')); b.classList.add('active'); selectedColor = c; }
 function chgQty(d) { quantity = Math.max(1, quantity + d); document.getElementById('modalQty').textContent = quantity; }
 
 function addToCart() {
   if (!selectedSize) return showToast('يرجى اختيار المقاس', 'error');
-  if (!selectedColor) return showToast('يرجى اختيار اللون', 'error');
-  const i = cart.findIndex(x => x.id === currentProduct.id && x.size === selectedSize && x.color === selectedColor);
+  const i = cart.findIndex(x => x.id === currentProduct.id && x.size === selectedSize);
   if (i > -1) cart[i].qty += quantity;
-  else cart.push({ id: currentProduct.id, name: currentProduct.name, price: currentProduct.price, icon: currentProduct.icon, size: selectedSize, color: selectedColor, qty: quantity });
+  else cart.push({ id: currentProduct.id, name: currentProduct.name, price: currentProduct.price, icon: currentProduct.icon, size: selectedSize, qty: quantity });
   const n = currentProduct.name;
   updateCartUI(true); closeProductModal();
   showToast(`تمت إضافة "${n}" إلى السلة`, 'success');
@@ -646,13 +674,16 @@ function closeCart() { cartOpen = false; document.getElementById('cartPanel').cl
 function checkout() {
   const name = document.getElementById('customerName').value.trim();
   const phone = document.getElementById('customerPhone').value.trim();
+  const address = document.getElementById('customerAddress').value.trim();
+  const backupPhone = document.getElementById('customerBackupPhone').value.trim();
   if (!name) { showToast('يرجى إدخال الاسم الكامل', 'error'); document.getElementById('customerName').focus(); return; }
+  if (!address) { showToast('يرجى إدخال العنوان', 'error'); document.getElementById('customerAddress').focus(); return; }
   if (!phone) { showToast('يرجى إدخال رقم الهاتف', 'error'); document.getElementById('customerPhone').focus(); return; }
   if (!cart.length) { showToast('السلة فارغة!', 'error'); return; }
   const t = totals();
 
   let m = `👑 *طلب جديد من متجر نور للملابس*\n━━━━━━━━━━━━━━━━━━\n\n`;
-  m += `📍 *الفرع:* ${selectedBranch}\n👤 *اسم العميل:* ${name}\n📞 *رقم الهاتف:* ${phone}\n\n`;
+  m += `📍 *الفرع:* ${selectedBranch}\n👤 *اسم العميل:* ${name}\n📞 *رقم الهاتف:* ${phone}\n📍 *العنوان:* ${address}\n${backupPhone ? `📞 *رقم احتياطي:* ${backupPhone}\n` : ''}\n`;
   m += `🛒 *تفاصيل الطلب:*\n──────────────\n`;
   cart.forEach((it, i) => {
     m += `\n${i+1}. *${it.name}*\n   📏 المقاس: ${it.size}\n   🎨 اللون: ${it.color}\n   📦 الكمية: ${it.qty}\n   💰 السعر: ${money(it.price * it.qty)}\n`;
@@ -673,7 +704,7 @@ function showToast(msg, type = 'info') {
   setTimeout(() => t.remove(), 3100);
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeProductModal(); closeCart(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeImageLightbox(); closeProductModal(); closeCart(); } });
 </script>
 </body>
         </html>
