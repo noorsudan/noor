@@ -227,7 +227,7 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
       <i class="fas fa-times"></i></button>
 
     <div class="modal-thumb h-44 md:h-52 flex items-center justify-center rounded-t-3xl">
-      <i id="modalIcon" class="fas fa-shirt"></i><img id="modalImage" alt="" class="absolute inset-0 w-full h-full object-cover hidden">
+      <i id="modalIcon" class="fas fa-shirt"></i><img id="modalImage" alt="" class="absolute inset-0 w-full h-full object-cover hidden cursor-zoom-in" onclick="openFullImage(event)">
     </div>
 
     <div class="p-6 space-y-6">
@@ -239,7 +239,7 @@ body{font-family:'Tajawal',sans-serif;overflow-x:hidden;background:#0d0a04;color
 
       <div>
         <label class="font-bold text-sm mb-3 block"><i class="fas fa-ruler-combined text-gold-400 ml-2"></i>اختر المقاس</label>
-        <div class="flex flex-wrap gap-3">
+        <div id="sizeOptions" class="flex flex-wrap gap-3">
           <button onclick="selSize(this,'S')" class="size-btn w-12 h-12 rounded-xl font-bold text-sm">S</button>
           <button onclick="selSize(this,'M')" class="size-btn w-12 h-12 rounded-xl font-bold text-sm">M</button>
           <button onclick="selSize(this,'L')" class="size-btn w-12 h-12 rounded-xl font-bold text-sm">L</button>
@@ -369,7 +369,7 @@ async function initStore() {
       }));
 
       const rawProducts = await client.fetch(`*[_type == "product" && available == true] {
-        _id, name, price, category, icon,
+        _id, name, price, category, icon, sizes,
         "imageUrl": image.asset->url,
         "branchName": branch->name
       }`);
@@ -569,10 +569,19 @@ function openModal(id) {
   document.getElementById('modalProductName').textContent = p.name;
   document.getElementById('modalProductPrice').textContent = money(p.price);
   selectedSize = ''; quantity = 1;
+  const sizeOptions = document.getElementById('sizeOptions');
+  const configuredSizes = (p.sizes || []).filter(s => s && (s.available !== false)).map(s => typeof s === 'string' ? s : s.label);
+  const visibleSizes = configuredSizes.length ? configuredSizes : ['S','M','L','XL','XXL','XXXL'];
+  sizeOptions.innerHTML = visibleSizes.map(s => `<button onclick="selSize(this,'${s}')" class="size-btn w-auto min-w-[3rem] px-3 h-12 rounded-xl font-bold text-sm">${s}</button>`).join('');
   document.getElementById('modalQty').textContent = 1;
   document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('productModal').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
+}
+
+function openFullImage(e) {
+  e.stopPropagation();
+  if (currentProduct?.imageUrl) window.open(currentProduct.imageUrl, '_blank', 'noopener,noreferrer');
 }
 
 function closeProductModal() {
